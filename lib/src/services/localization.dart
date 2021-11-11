@@ -5,15 +5,23 @@ import 'package:intl/intl.dart';
 class Localization
 {
     late Map<String, dynamic> _translations;
+    late String Function(String value, String key, String arg) _stringProcessor;
+    late String Function(String value, String key, String arg) _pluralProcessor;
 
     Localization._();
 
     static Localization? _instance;
     static Localization get instance => _instance ?? (_instance = Localization._());
 
-    static void load(Map<String, dynamic> translations)
+    static void load(Map<String, dynamic> translations,
+        String Function(String value, String key, String arg)? stringProcessor,
+        String Function(String value, String key, String arg)? pluralProcessor)
     {
         instance._translations = translations;
+        instance._stringProcessor = stringProcessor
+            ?? (value, key, arg) => value.replaceAll(key, arg);
+        instance._pluralProcessor = pluralProcessor
+            ?? (String value, String key, String arg) => value.replaceAll(key, arg);
     }
 
     String translate(String key, {Map<String, dynamic>? args})
@@ -53,24 +61,21 @@ class Localization
             return null;
         }
 
-        template = template.replaceAll(Constants.pluralValueArg, value.toString());
+        template = _pluralProcessor(template, Constants.pluralValueArg, value.toString());
+
         if (args == null)
         {
             return template;
         }
 
-        for (String k in args.keys)
-        {
-            template = template!.replaceAll("{$k}", args[k].toString());
-        }
-        return template;
+        return _assignArguments(template, args);
     }
 
     String _assignArguments(String value, Map<String, dynamic> args)
     {
         for(final key in args.keys)
         {
-            value = value.replaceAll('{$key}', '${args[key]}');
+            value = _stringProcessor(value, '{$key}', '${args[key]}');
         }
 
         return value;

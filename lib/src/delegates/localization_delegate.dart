@@ -20,9 +20,13 @@ class LocalizationDelegate extends LocalizationsDelegate<Localization>
 
     LocaleChangedCallback? onLocaleChanged;
 
+    String Function(String value, String key, String arg)? _stringProcessor;
+    String Function(String value, String key, String arg)? _pluralProcessor;
+
     Locale get currentLocale => _currentLocale!;
 
-    LocalizationDelegate._(this.fallbackLocale, this.supportedLocales, this.supportedLocalesMap, this.preferences);
+    LocalizationDelegate._(this.fallbackLocale, this.supportedLocales, this.supportedLocalesMap, this.preferences,
+        this._stringProcessor, this._pluralProcessor);
 
     Future changeLocale(Locale newLocale) async
     {
@@ -34,7 +38,7 @@ class LocalizationDelegate extends LocalizationsDelegate<Localization>
 
         var localizedContent = await LocaleService.getLocaleContent(locale, supportedLocalesMap);
 
-        Localization.load(localizedContent);
+        Localization.load(localizedContent, _stringProcessor, _pluralProcessor);
 
         _currentLocale = locale;
 
@@ -69,10 +73,14 @@ class LocalizationDelegate extends LocalizationsDelegate<Localization>
     @override
     bool shouldReload(LocalizationsDelegate<Localization> old) => true;
 
-  static Future<LocalizationDelegate> create({required String fallbackLocale,
-                                              required List<String> supportedLocales,
-                                                String basePath = Constants.localizedAssetsPath,
-                                                ITranslatePreferences? preferences}) async
+  static Future<LocalizationDelegate> create({
+        required String fallbackLocale,
+        required List<String> supportedLocales,
+        String basePath = Constants.localizedAssetsPath,
+        ITranslatePreferences? preferences,
+        String Function(String value, String key, String arg)? keyProcessor,
+        String Function(String value, String key, String arg)? pluralKeyProcessor
+    }) async
     {
         WidgetsFlutterBinding.ensureInitialized();
 
@@ -82,7 +90,8 @@ class LocalizationDelegate extends LocalizationsDelegate<Localization>
 
         ConfigurationValidator.validate(fallback, locales);
 
-        var delegate = LocalizationDelegate._(fallback, locales, localesMap, preferences);
+        var delegate = LocalizationDelegate._(fallback, locales, localesMap, preferences,
+            keyProcessor, pluralKeyProcessor);
 
         if(!await delegate._loadPreferences())
         {
