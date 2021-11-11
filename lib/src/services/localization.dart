@@ -21,7 +21,7 @@ class Localization
         instance._stringProcessor = stringProcessor
             ?? (value, key, arg) => value.replaceAll(key, arg);
         instance._pluralProcessor = pluralProcessor
-            ?? (String value, String key, String arg) => value.replaceAll(key, arg);
+            ?? (value, key, arg) => value.replaceAll(key, arg);
     }
 
     String translate(String key, {Map<String, dynamic>? args})
