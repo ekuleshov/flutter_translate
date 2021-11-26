@@ -95,7 +95,7 @@ class Localization
             }
         }
 
-        return map[key];
+        return _stringProcessor(map[key], '', '');
     }
 
     Map<String, String> _getAllPluralForms(String key, Map<String, dynamic> map) {
