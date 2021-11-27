@@ -95,7 +95,7 @@ class Localization
             }
         }
 
-        return _stringProcessor(map[key], '', '');
+        return _stringProcessor(map[key] ?? '<UNKNOWN $key>', '', '');
     }
 
     Map<String, String> _getAllPluralForms(String key, Map<String, dynamic> map) {
