@@ -5,16 +5,19 @@ homepage: https://jesway.com
 repository: https://github.com/Jesway/Flutter-Translate
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  universal_io: ^2.0.4
-  intl: ^0.18.0
+  universal_io: ^2.2.2
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+dependency_overrides:
+  intl: ^0.18.1
 
 flutter:
