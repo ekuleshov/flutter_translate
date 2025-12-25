@@ -114,8 +114,8 @@ class LocalizationDelegate extends LocalizationsDelegate<Localization> {
       Locale? locale = await preferences!.getPreferredLocale();
       if (locale != null) {
         await changeLocale(locale);
+        return true;
       }
-      return true;
     } catch (e) {
       // ignore
     }
